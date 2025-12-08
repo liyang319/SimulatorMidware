@@ -16,6 +16,7 @@
 #include "AppData.h"
 #include "ProcessCtrlCmdThread.h"
 #include "ProcessStatusCmdThread.h"
+#include "Base.h"
 
 class UpperTcpServer
 {

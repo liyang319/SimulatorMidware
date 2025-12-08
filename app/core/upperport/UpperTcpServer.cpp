@@ -39,7 +39,7 @@ void UpperTcpServer::stop()
         close(this->ctrl_conn_socket);
     }
 
-    // KLOG_D("socket closed");
+    COUT << "socket closed" << endl;
 }
 
 int UpperTcpServer::createSocket(int port)
@@ -47,7 +47,7 @@ int UpperTcpServer::createSocket(int port)
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket < 0)
     {
-        // KLOG_E("Error creating socket" << std::endl);
+        COUT << "Error creating socket" << endl;
         return -1;
     }
 
@@ -66,13 +66,13 @@ int UpperTcpServer::createSocket(int port)
 
     if (bind(server_socket, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
     {
-        // KLOG_E("Error binding socket to port " << port << std::endl);
+        COUT << "Error binding socket to port " << endl;
         return -1;
     }
 
     if (listen(server_socket, 5) < 0)
     {
-        // KLOG_E("Error listening on port " << port << std::endl);
+        COUT << "Error listening on port " << port << endl;
         return -1;
     }
 
@@ -81,13 +81,13 @@ int UpperTcpServer::createSocket(int port)
     int flags = fcntl(server_socket, F_GETFL, 0);
     if (flags == -1)
     {
-        // KLOG_E("Error getting socket flags" << std::endl);
+        COUT << "Error getting socket flags" << endl;
         return -1;
     }
     flags |= O_NONBLOCK;
     if (fcntl(server_socket, F_SETFL, flags) == -1)
     {
-        // KLOG_E("Error setting socket to non-blocking mode" << std::endl);
+        COUT << "Error setting socket to non-blocking mode" << endl;
         return -1;
     }
     return server_socket;
@@ -247,7 +247,7 @@ void UpperTcpServer::run()
         int ret = select(maxfd, &read_fds, NULL, NULL, &timeout);
         if (ret == -1)
         {
-            // KLOG_E("Error in select()" << std::endl);
+            COUT << "Error in select()" << endl;
             break;
         }
 
@@ -258,7 +258,7 @@ void UpperTcpServer::run()
             data_conn_socket = accept(data_socket, (struct sockaddr *)&client_addr, &client_len);
             if (data_conn_socket < 0)
             {
-                ; // KLOG_E("Error accepting data connection" << std::endl);
+                COUT << "Error accepting data connection" << endl;
             }
             else
             {
@@ -273,13 +273,13 @@ void UpperTcpServer::run()
                 int client_flags = fcntl(data_conn_socket, F_GETFL, 0);
                 if (client_flags == -1)
                 {
-                    ; // KLOG_E("Error getting client socket flags" << std::endl);
+                    COUT << "Error getting client socket flags" << endl;
                     // return -1;
                 }
                 client_flags |= O_NONBLOCK;
                 if (fcntl(data_conn_socket, F_SETFL, client_flags) == -1)
                 {
-                    ; // KLOG_E("Error setting client socket to non-blocking mode" << std::endl);
+                    COUT << "Error setting client socket to non-blocking mode" << endl;
                     // return -1;
                 }
                 /////////////获取数据链路连接IP//////////
@@ -304,7 +304,7 @@ void UpperTcpServer::run()
             ctrl_conn_socket = accept(ctrl_socket, (struct sockaddr *)&client_addr, &client_len);
             if (ctrl_conn_socket < 0)
             {
-                ; // KLOG_E("Error accepting ctrl connection" << std::endl);
+                COUT << "Error accepting ctrl connection" << endl;
             }
             else
             {
@@ -317,13 +317,13 @@ void UpperTcpServer::run()
                 int client_flags = fcntl(ctrl_conn_socket, F_GETFL, 0);
                 if (client_flags == -1)
                 {
-                    ; // KLOG_E("Error getting client socket flags" << std::endl);
+                    COUT << "Error getting client socket flags" << endl;
                     // return -1;
                 }
                 client_flags |= O_NONBLOCK;
                 if (fcntl(ctrl_conn_socket, F_SETFL, client_flags) == -1)
                 {
-                    ; // KLOG_E("Error setting client socket to non-blocking mode" << std::endl);
+                    COUT << "Error setting client socket to non-blocking mode" << endl;
                     // return -1;
                 }
                 /////////////获取控制链路连接IP//////////

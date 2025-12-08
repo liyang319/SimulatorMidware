@@ -83,14 +83,14 @@ void UpperWorkerThread::threadFunction()
                 delete[] recv_data.content;
                 recv_data.content = nullptr;
             }
-            // cout << "--------" << str << endl;
-            std::vector<std::string> cmdList = splitJsonCmd(str);
-            // cout << "------cmdList------size=" << cmdList.size() << endl;
-            for (std::string &cmd : cmdList)
-            {
-                CtrlCmdDispatcher patcher(cmd);
-                patcher.DispatchCommand();
-            }
+            cout << "--------" << str << endl;
+            // std::vector<std::string> cmdList = splitJsonCmd(str);
+            // // cout << "------cmdList------size=" << cmdList.size() << endl;
+            // for (std::string &cmd : cmdList)
+            // {
+            //     CtrlCmdDispatcher patcher(cmd);
+            //     patcher.DispatchCommand();
+            // }
         }
 
         if (AppData::getInstance().getDataRecvQueueSize() > 0)

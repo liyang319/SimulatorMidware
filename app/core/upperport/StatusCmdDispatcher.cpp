@@ -25,11 +25,12 @@ int extractNumber(std::string data)
 
 StatusCmdDispatcher::StatusCmdDispatcher(const std::string &json_data)
 {
-    // COUT << "[Received StatusCmd] :  " << json_data << endl;
+    COUT << "[Received StatusCmd] :  " << json_data << endl;
     m_document.Parse(json_data.c_str());
     if (m_document.HasParseError())
     {
-        // KLOG_W( "Failed to parse JSON data"<<std::endl<<json_data<<std::endl);
+        cout << "Failed to parse JSON data" << endl
+             << json_data << std::endl;
         return;
     }
 }
@@ -38,7 +39,7 @@ void StatusCmdDispatcher::DispatchCommand()
 {
     if (m_document.HasParseError())
     {
-        // KLOG_W( "Failed to parse JSON data");
+        COUT << "Failed to parse JSON data" << endl;
         return;
     }
 
