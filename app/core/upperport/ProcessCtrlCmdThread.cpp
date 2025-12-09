@@ -37,6 +37,7 @@ void ProcessCtrlCmdThread::stop()
     if (m_running)
     {
         m_running = false;
+        COUT << "ProcessCtrlCmdThread  " << m_running << endl;
         if (m_thread.joinable())
         {
             m_thread.join();

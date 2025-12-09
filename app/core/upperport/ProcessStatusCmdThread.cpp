@@ -38,6 +38,7 @@ void ProcessStatusCmdThread::stop()
     if (m_running)
     {
         m_running = false;
+        COUT << "ProcessStatusCmdThread  " << m_running << endl;
         if (m_thread.joinable())
         {
             m_thread.join();
@@ -85,9 +86,7 @@ void ProcessStatusCmdThread::threadFunction()
         }
         else if (bytes_received == 0)
         {
-#ifdef BUILD_CONFIG_ARCH_ARM //
-// KLOG_E("Client disconnected" << std::endl);
-#endif
+            printf("Client disconnected\n");
             close(client_socket);
             break;
         }
@@ -133,7 +132,5 @@ void ProcessStatusCmdThread::threadFunction()
         }
         usleep(10000);
     }
-#ifdef BUILD_CONFIG_ARCH_ARM //
     printf("--------ProcessStatusCmdThread----END--\n");
-#endif
 }

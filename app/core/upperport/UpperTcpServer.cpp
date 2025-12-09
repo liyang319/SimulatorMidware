@@ -264,9 +264,7 @@ void UpperTcpServer::run()
             {
                 if (processStatusCmdThread.isRunning())
                 {
-#ifdef BUILD_CONFIG_ARCH_ARM //
                     printf("------ProcessStatusCmdThread---STOP---\n");
-#endif
                     processStatusCmdThread.stop();
                 }
                 // 设置客户端套接字为非阻塞模式
