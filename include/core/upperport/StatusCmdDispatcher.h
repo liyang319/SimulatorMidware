@@ -28,7 +28,7 @@ public:
     void DispatchCommand();
 
 private:
-    void ProcessChannelDataCmd(int channel);
+    void ProcessQueryVarsCmd();
 
     rapidjson::Document m_document;
 };

@@ -45,9 +45,16 @@ void StatusCmdDispatcher::DispatchCommand()
 
     if (m_document.HasMember("cmd"))
     {
-        int channel = extractNumber(m_document["cmd"].GetString());
-        ProcessChannelDataCmd(channel);
-        // std::cout << "-------channel--------- " << channel << std::endl;
+        std::string cmd = m_document["cmd"].GetString();
+        if (cmd == "QueryVars")
+        {
+            COUT << "Processing QueryVars command " << endl;
+            ProcessQueryVarsCmd();
+        }
+        else
+        {
+            COUT << "Unknown command: " << cmd << endl;
+        }
     }
     else
     {
@@ -55,23 +62,35 @@ void StatusCmdDispatcher::DispatchCommand()
     }
 }
 
-void StatusCmdDispatcher::ProcessChannelDataCmd(int channel)
+void StatusCmdDispatcher::ProcessQueryVarsCmd()
 {
-    // COUT << "Processing ChannelData command " << endl;
-    if (channel < 1 || channel > 16)
-    {
-        COUT << "Invalid channel" << endl;
-        return;
-    }
-    // 回复通道状态数据
+    COUT << "Processing QueryVars command " << endl;
+
+    rapidjson::Document doc;
+    doc.SetObject();
+    rapidjson::Value cmd;
+    cmd.SetString("QueryVars_ack");
+    doc.AddMember("cmd", cmd, doc.GetAllocator());
+    doc.AddMember("count", 3, doc.GetAllocator());
+
+    // 构建 vars 对象
+    rapidjson::Value vars(rapidjson::kObjectType);
+    vars.AddMember("var1", "123.33", doc.GetAllocator());
+    vars.AddMember("var2", "11.22", doc.GetAllocator());
+    vars.AddMember("var3", "333.50", doc.GetAllocator());
+    doc.AddMember("vars", vars, doc.GetAllocator());
+
+    doc.AddMember("ack", "OK", doc.GetAllocator());
+
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    doc.Accept(writer);
+    COUT << buffer.GetString() << endl;
+
     UpperportData data;
-    // DataFormater::FormatStatusData(channel, data);
-    // 打印data的数据
-    for (int i = 0; i < data.len; ++i)
-    {
-        // std::cout << data[i];
-        // std::cout << std::hex << static_cast<int>(data[i]);
-        // CLOG_D(channel,std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(data.content[i]) << " ");
-    }
+    data.len = strlen(buffer.GetString());
+    data.content = new char[data.len + 1];
+    memset(data.content, 0, data.len + 1);
+    std::memcpy(data.content, buffer.GetString(), data.len);
     AppData::getInstance().addDataToDataSendQueue(data);
 }

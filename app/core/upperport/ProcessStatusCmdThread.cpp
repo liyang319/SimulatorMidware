@@ -81,7 +81,7 @@ void ProcessStatusCmdThread::threadFunction()
             memset(recvData.content, 0, recvData.len + 1);
             std::copy(buffer, buffer + recvData.len, recvData.content);
             AppData::getInstance().addDataToDataRecvQueue(recvData);
-            // printf("------handleDataConnection------size--%d-\n", AppData::getInstance().getDataRecvQueueSize());
+            printf("------handleDataConnection------size--%d-\n", AppData::getInstance().getDataRecvQueueSize());
             // KLOG_D("From [" << srcIP << "] " << buffer);
         }
         else if (bytes_received == 0)
@@ -109,18 +109,20 @@ void ProcessStatusCmdThread::threadFunction()
         if (AppData::getInstance().getDataSendQueueSize() > 0)
         {
             UpperportData send_data = AppData::getInstance().getDataFromDataSendQueue();
-            // printf("-----data_send_queue----size=%zu--\n", AppData::getInstance().getDataSendQueueSize());
+            printf("-----data_send_queue----size=%d--\n", AppData::getInstance().getDataSendQueueSize());
             try
             {
                 int bytes_sent = send(client_socket, send_data.content, send_data.len, 0);
                 if (bytes_sent == -1)
                 {
-                    // KLOG_E("Error sending data: " << strerror(errno) << std::endl);
+                    printf("Error sending data\n");
                 }
+                printf("------data_send_queue---send-%d--\n", bytes_sent);
             }
             catch (const std::exception &e)
             {
                 // KLOG_E( e.what() << '\n');
+                printf("exception\n");
             }
 
             if (send_data.content != nullptr)
@@ -128,9 +130,9 @@ void ProcessStatusCmdThread::threadFunction()
                 delete[] send_data.content;
                 send_data.content = nullptr;
             }
-            // printf("------data_send_queue---send-%d--\n", bytes_sent);
         }
-        usleep(10000);
+        // usleep(10000);
+        usleep(100);
     }
     printf("--------ProcessStatusCmdThread----END--\n");
 }
