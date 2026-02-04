@@ -75,10 +75,33 @@ void StatusCmdDispatcher::ProcessQueryVarsCmd()
 
     // 构建 vars 对象
     rapidjson::Value vars(rapidjson::kObjectType);
-    vars.AddMember("var1", "123.33", doc.GetAllocator());
-    vars.AddMember("var2", "11.22", doc.GetAllocator());
-    vars.AddMember("var3", "333.50", doc.GetAllocator());
+    rapidjson::Value var1, var2, var3;
+    var1.SetString(std::to_string(AppData::getInstance().var1).c_str(), doc.GetAllocator());
+    var2.SetString(std::to_string(AppData::getInstance().var2).c_str(), doc.GetAllocator());
+    var3.SetString(std::to_string(AppData::getInstance().var3).c_str(), doc.GetAllocator());
+    vars.AddMember("var1", var1, doc.GetAllocator());
+    vars.AddMember("var2", var2, doc.GetAllocator());
+    vars.AddMember("var3", var3, doc.GetAllocator());
+    AppData::getInstance().var1 += 1.0f;
+    AppData::getInstance().var2 += 10.0f;
+    AppData::getInstance().var3 -= 5.0f;
     doc.AddMember("vars", vars, doc.GetAllocator());
+
+    // 添加 time 字段 - 当前时间戳
+    auto now = std::chrono::system_clock::now();
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                  now.time_since_epoch()) %
+              1000;
+    auto timer = std::chrono::system_clock::to_time_t(now);
+    std::tm bt = *std::localtime(&timer);
+
+    std::ostringstream oss;
+    oss << std::put_time(&bt, "%Y-%m-%d %H:%M:%S");
+    oss << '.' << std::setfill('0') << std::setw(3) << ms.count();
+
+    rapidjson::Value timeValue;
+    timeValue.SetString(oss.str().c_str(), static_cast<rapidjson::SizeType>(oss.str().length()), doc.GetAllocator());
+    doc.AddMember("time", timeValue, doc.GetAllocator());
 
     doc.AddMember("ack", "OK", doc.GetAllocator());
 

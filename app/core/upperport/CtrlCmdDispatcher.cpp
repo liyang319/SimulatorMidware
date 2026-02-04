@@ -177,11 +177,55 @@ void CtrlCmdDispatcher::ProcessSendProjOKCmd()
 void CtrlCmdDispatcher::ProcessStartCmd()
 {
     COUT << "Processing Start command" << endl;
+    rapidjson::Document doc;
+    doc.SetObject();
+    rapidjson::Value cmd;
+    cmd.SetString("ModuleStart_ack");
+    doc.AddMember("cmd", cmd, doc.GetAllocator());
+
+    rapidjson::Value act;
+    std::string strTime = Base::currentTime();
+    act.SetString(strTime.c_str(), strTime.length(), doc.GetAllocator());
+    doc.AddMember("act", act, doc.GetAllocator());
+
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    doc.Accept(writer);
+    COUT << buffer.GetString() << endl;
+
+    UpperportData data;
+    data.len = strlen(buffer.GetString());
+    data.content = new char[data.len + 1];
+    memset(data.content, 0, data.len + 1);
+    std::memcpy(data.content, buffer.GetString(), data.len);
+    AppData::getInstance().addDataToCtrlSendQueue(data);
 }
 
 void CtrlCmdDispatcher::ProcessStopCmd()
 {
     COUT << "Processing Stop command" << endl;
+    rapidjson::Document doc;
+    doc.SetObject();
+    rapidjson::Value cmd;
+    cmd.SetString("ModuleStop_ack");
+    doc.AddMember("cmd", cmd, doc.GetAllocator());
+
+    rapidjson::Value act;
+    std::string strTime = Base::currentTime();
+    act.SetString(strTime.c_str(), strTime.length(), doc.GetAllocator());
+    doc.AddMember("act", act, doc.GetAllocator());
+
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    doc.Accept(writer);
+    COUT << buffer.GetString() << endl;
+
+    UpperportData data;
+    data.len = strlen(buffer.GetString());
+    data.content = new char[data.len + 1];
+    memset(data.content, 0, data.len + 1);
+    std::memcpy(data.content, buffer.GetString(), data.len);
+    AppData::getInstance().addDataToCtrlSendQueue(data);
 }
 
 void CtrlCmdDispatcher::ProcessPauseCmd()

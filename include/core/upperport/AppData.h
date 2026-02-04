@@ -69,6 +69,9 @@ public:
     int getCtrlSendQueueSize() { return ctrl_send_queue.size(); };
 
     int powerSupplyStatus = 1; // 供电状态， 1：正常 0: 掉电
+    float var1 = 0.0f;
+    float var2 = 20.0f;
+    float var3 = 100.0f;
 };
 
 #endif // APPDATA_H
